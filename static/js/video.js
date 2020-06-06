@@ -1,26 +1,40 @@
 /// <reference path="./both.js" />
 
 
-function initPlayer() {
-    if (!flvjs.isSupported()) {
-        console.warn('flvjs not supported');
-        return;
-    }
+async function initPlayer() {
+  if (!flvjs.isSupported()) {
+    console.warn('flvjs not supported');
+    return;
+  }
 
-    let videoElement = document.querySelector("#videoElement");
-    let flvPlayer = flvjs.createPlayer({
-        type: "flv",
-        url: "/live"
-    });
-    flvPlayer.attachMediaElement(videoElement);
-    flvPlayer.load();
-    flvPlayer.play();
+  const videoElement = document.querySelector("video");
+  const flvPlayer = flvjs.createPlayer({
+    type: "flv",
+    url: "/live"
+  });
+  flvPlayer.attachMediaElement(videoElement);
+  flvPlayer.load();
+  flvPlayer.play();
 
-    let overlay = document.querySelector('#videoOverlay');
-    overlay.onclick = () => {
-        overlay.style.display = 'none';
-        videoElement.muted = false;
-    };
+  const overlay = document.querySelector('.overlay');
+  overlay.onclick = () => {
+    overlay.style.display = 'none';
+    videoElement.muted = false;
+  };
+
+  videoElement.addEventListener('play', () => {
+    document.querySelector(".poster").style.display = 'none';
+  });
+
+  videoElement.addEventListener('durationchange', () => {
+    document.querySelector(".overlay").style.display = 'block';
+    document.querySelector(".live").style.display = 'none';
+  });
+
+  videoElement.addEventListener('progress', () => {
+    document.querySelector(".poster").style.display = 'none';
+    document.querySelector(".live").style.display = 'block';
+  });
 }
 
 window.addEventListener("load", initPlayer);

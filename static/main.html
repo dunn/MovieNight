@@ -28,13 +28,22 @@
 
 {{if .Video}}
 <div id="videoWrapper">
-    <div id="videoOverlay">
-        <img src="/static/img/mute-icon.png" />
+  <div class="overlay">
+    <div class="poster"></div>
+    <div class="mute">
+      <img src="/static/img/mute-icon.png" />
     </div>
-    <video id="videoElement" x5-video-player-type="h5" x5-video-player-fullscreen="true" playsinline webkit-playsinline
-        autoplay muted controls>
-        Your browser is too old and doesn't support HTML5 video.
-    </video>
+  </div>
+  <video
+    x5-video-player-type="h5"
+    x5-video-player-fullscreen="true"
+    playsinline
+    webkit-playsinline
+    autoplay
+    muted
+    controls>
+    Your browser is too old and doesn't support HTML5 video.
+  </video>
 </div>
 {{end}}
 
@@ -102,6 +111,10 @@
     </div>
     <div id="joinbox">
       <div class="welcome">
+        <div class="live" style="display: none;">
+          <p>We are <span class="live-caps">LIVE</span> broadcasting our pirate signal</p>
+        </div>
+
         <p>Welcome to the Trash Cloud, a streaming collective built on <a href="https://github.com/zorchenhimer/MovieNight" title="MovieNight code repository">MovieNight</a> and hubris.</p>
         <p>Join the Discord: <a href="https://discord.gg/mxGKWK2" title="TCC Discord invite">https://discord.gg/mxGKWK2</a></p>
       </div>

@@ -197,21 +197,29 @@ input[type=text] {
     display: flex;
 }
 
-#videoOverlay {
+.overlay div {
+    align-items: center;
+    display: flex;
     height: 100%;
-    width: 100%;
+    justify-content: center;
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.75);
-    z-index: 3;
     text-align: center;
     vertical-align: middle;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
     z-index: 2;
 }
 
-#videoElement {
+.poster {
+  background: url('/static/img/poster.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.mute {
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 3;
+}
+
+video {
     z-index: 1;
     position: relative;
     width: 100%;
@@ -314,6 +322,15 @@ input[type=text] {
 #joinbox .welcome p {
   color: #e5e0e5;
   text-align: center;
+}
+
+.live {
+  font-weight: bold;
+  padding: 2em 0;
+}
+
+.live-caps {
+  color: red;
 }
 
 #chat {
@@ -421,6 +438,6 @@ input[type=text] {
 /* --------------- */
 /* VIDEO ONLY MODE */
 /* --------------- */
-.video-only #videoElement {
+.video-only video {
   height: 99vh;
 }
