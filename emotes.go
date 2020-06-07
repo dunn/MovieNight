@@ -29,6 +29,7 @@ type EmoteInfo struct {
 
 func loadEmotes() error {
 	//fmt.Println(processEmoteDir(emoteDir))
+	fmt.Printf("Loading emotes from %v", emoteDir)
 	newEmotes, err := processEmoteDir(emoteDir)
 	if err != nil {
 		return err
@@ -45,35 +46,32 @@ func processEmoteDir(path string) (common.EmotesMap, error) {
 		return nil, errors.Wrap(err, "could not open emoteDir:")
 	}
 
-	subDirs := []string{}
+	em := common.NewEmotesMap()
 
 	for _, item := range dirInfo {
 		// Get first level subdirs (eg, "twitch", "discord", etc)
 		if item.IsDir() {
-			subDirs = append(subDirs, item.Name())
+			fmt.Printf("Found top-level dir %v", item.Name())
+			em[item.Name()] = map[string]map[string]string{}
 			continue
 		}
 	}
 
-	em := common.NewEmotesMap()
-	// Find top level emotes
-	em, err = findEmotes(path, em)
-	if err != nil {
-		return nil, errors.Wrap(err, "could not findEmotes() in top level directory:")
-	}
+	fmt.Sprintf("Emote tree %v", em)
 
 	// Get second level subdirs (eg, "twitch", "zorchenhimer", etc)
-	for _, dir := range subDirs {
+	for dir, _ := range em {
+		fmt.Printf("Looking in %v", dir)
 		subd, err := ioutil.ReadDir(filepath.Join(path, dir))
 		if err != nil {
 			fmt.Printf("Error reading dir %q: %v\n", subd, err)
 			continue
 		}
 		for _, d := range subd {
+			fmt.Printf("Moving into %v/%v...", dir, subd)
 			if d.IsDir() {
-				//emotes = append(emotes, findEmotes(filepath.Join(path, dir, d.Name()))...)
 				p := filepath.Join(path, dir, d.Name())
-				em, err = findEmotes(p, em)
+				em[dir][d.Name()], err = findEmotes(p)
 				if err != nil {
 					fmt.Printf("Error finding emotes in %q: %v\n", p, err)
 				}
@@ -85,9 +83,7 @@ func processEmoteDir(path string) (common.EmotesMap, error) {
 	return em, nil
 }
 
-func findEmotes(dir string, em common.EmotesMap) (common.EmotesMap, error) {
-	//em := NewEmotesMap()
-
+func findEmotes(dir string) (map[string]string, error) {
 	fmt.Printf("finding emotes in %q\n", dir)
 	emotePNGs, err := filepath.Glob(filepath.Join(dir, "*.png"))
 	if err != nil {
@@ -101,16 +97,28 @@ func findEmotes(dir string, em common.EmotesMap) (common.EmotesMap, error) {
 	}
 	fmt.Printf("%d emoteGIFs\n", len(emoteGIFs))
 
+	em := map[string]string{}
+
 	for _, file := range emotePNGs {
-		em = em.Add(file)
-		//emotes = append(emotes, common.Emote{FullPath: dir, Code: file})
+		code, filepath = parseEmoteName(file)
+		em[code] = filepath
 	}
 
 	for _, file := range emoteGIFs {
-		em = em.Add(file)
+		code, filepath = parseEmoteName(file)
+		em[code] = filepath
 	}
 
 	return em, nil
+}
+
+func parseEmoteName(file string) (string, string) {
+	fullpath = reStripStatic.ReplaceAllLiteralString(file, "")
+
+	base := filepath.Base(fullpath)
+	code := base[0 : len(base)-len(filepath.Ext(base))]
+
+	return code, fullpath
 }
 
 func getEmotes(names []string) error {
